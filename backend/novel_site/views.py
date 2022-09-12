@@ -22,3 +22,6 @@ def books_cates(request):
     }
     # return HttpResponse("over", status=200)
     return HttpResponse(json.dumps(resData))
+
+def accounts(request, id):
+    return render(request, 'login.html')
