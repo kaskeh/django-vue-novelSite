@@ -1,7 +1,7 @@
 <template>
   <div id="background">
     <div id="contain">
-      <h1>Register</h1>
+      <h1>账号注册</h1>
 
       <div class="form">
         <label>用户名：</label>
@@ -15,14 +15,72 @@
         <label>邮箱：</label>
         <input type="email" v-model.trim="mail" /><br />
       </div>
-      <div class="form">
+      <!-- <div class="form">
         <label>手机号：</label>
         <input type="tel" v-model.trim="tel" /><br />
-      </div>
+      </div> -->
       <button @click.prevent="handlefinish">提交</button>
     </div>
   </div>
 </template>
+
+<script>
+import { registerFrom } from "@/apis/read.js";
+import { formToken } from "@/apis/read.js";
+import data from "bootstrap/js/dist/dom/data";
+export default {
+  name: "registerComp",
+  props: {
+    msg: String,
+  },
+  data() {
+    return {
+      name: "",
+      password: "",
+      mail: "",
+      submitToken: "",
+    };
+  },
+  methods: {
+    //点击完成按钮触发handlefinish
+    handlefinish: function () {
+      // 当填写的用户名 密码 邮箱 内容不为空时，发送表单数据到服务端进行合规校验 重复校验
+      if (this.name !== "" && this.password !== "" && this.mail !== "") {
+        registerFrom({
+          data: {
+            username: this.name,
+            password: this.password,
+            mail: this.mail,
+          },
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-CSRFToken": this.submitToken,
+            // "X-CSRFToken": document.cookie,
+          },
+        });
+        console.log("每个选项都填完了", data);
+      } else if (this.name === "") {
+        alert("用户名不能为空");
+      } else if (this.password === "") {
+        alert("密码不能为空");
+      } else if (this.mail === "") {
+        alert("邮箱不能为空");
+      }
+    },
+  },
+  mounted() {
+    formToken().then(
+      (response) => (
+        (this.submitToken = response.data.token),
+        // (this.submitToken = document.cookie.split("=")[1]),
+        // console.log("submitToken", response.data.token),
+        console.log("submitTokenCookies", this.submitToken)
+      )
+    );
+  },
+};
+</script>
+
 //css
 <style scoped>
 #background {

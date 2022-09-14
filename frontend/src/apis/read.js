@@ -9,3 +9,21 @@ export function GetCates () {
     method: 'get'
   })
 }
+
+export function registerFrom () {
+  return service.request({
+    url: '/register/',
+    method: 'post',
+    withCredentials: true,
+    xsrfCookieName: 'csrftoken',
+    xsrfHeaderName: 'X-CSRFToken',
+  })
+}
+
+export function formToken () {
+  return service.request({
+    url: '/token/',
+    method: 'get',
+  })
+}
+

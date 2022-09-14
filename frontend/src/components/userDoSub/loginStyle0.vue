@@ -45,21 +45,25 @@
 </template>
 
 <script>
+// import { thisExpression } from '@babel/types';
+
 export default {
   data() {
     return {
       name: "", //姓名，用v-model绑定监听，将输入的字符串赋值给name变量
       password: "", //密码
-      st: "false", //false为不保存登录
+      // st: "false", //false为不保存登录
     };
   },
   methods: {
     handlelogin: function () {
       if (
-        this.name === localStorage["name"] &&
-        this.password === localStorage["password"]
+        // this.name === localStorage["name"] &&
+        // this.password === localStorage["password"]
+        this.name &&
+        this.password
       ) {
-        this.$router.replace("/userHome"); //如果输入的名字以及密码正确路由跳转至个人页面
+        this.$router.push("/userHome"); //如果输入的名字以及密码正确路由跳转至个人页面
       } else if (this.name === "") {
         //名字为空
         alert("用户名不为空");
@@ -68,17 +72,18 @@ export default {
         alert("密码不为空");
       } else {
         alert("账号不存在，请注册后登录"); //查无此号
+        // console.log(this.name, this.password);
       }
     },
     handleregister: function () {
-      this.$router.replace("/register"); //点击注册按钮，跳转至注册页面
+      this.$router.push("/register"); //点击注册按钮，跳转至注册页面
     },
-    //点击保持登录状态触发handlesave
-    handlesave: function () {
-      this.st = "true"; //修改登录状态为true
-      localStorage.setItem("s", this.st);
-      console.log(localStorage.s);
-    },
+    // //点击保持登录状态触发handlesave
+    // handlesave: function () {
+    //   this.st = "true"; //修改登录状态为true
+    //   localStorage.setItem("s", this.st);
+    //   console.log(localStorage.s);
+    // },
   },
 };
 </script>
