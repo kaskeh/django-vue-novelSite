@@ -21,6 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('novel_site.urls')),
     path('accounts/', include('novel_site.urls')),
-    # path('accounts/login/', login),
-    # path('accounts/login/', logout),
 ]

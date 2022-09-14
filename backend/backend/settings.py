@@ -74,7 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -84,6 +83,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# # 缓存
+# CACHES = {
+#     'session': {
+#         'ENGINE': 'django_redis.cache.RedisCache',
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#         "OPTIONS": {
+#                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         }
+#     }
+# }
 
 
 # Password validation
@@ -127,9 +137,46 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS组的配置信息
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8080']
 CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:8080',
-    # 这里需要注意： 1. 必须添加http://否则报错（https未测试） 2. 此地址就是允许跨域的地址，即前端地址
+    #     '''
+    #         版本包小于3.0不用加http版本包大于3.0则需要加http
+    #     '''
+    'http://127.0.0.1:8080',# 填写发送请求端的地址
+    'http://localhost:8080',
+    'http://127.0.0.1:8000',# 填写发送请求端的地址
+    'http://localhost:8000',
 )
-CORS_ALLOW_CREDENTIALS = True  # 允许ajax跨域请求时携带cookie
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Pragma',
+)
+
+# 指定本项目用户模型类
+AUTH_USER_MODEL = "novel_site.User"
+
+# # 会话配置
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "session"
+
+# APPEND_SLASH=False # 当有些请求没有以/结尾时，设置这个可以让检测略过
