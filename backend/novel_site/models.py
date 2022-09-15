@@ -7,7 +7,7 @@ class User(AbstractUser):
         自定义用户模型类
     '''
     mobile = models.CharField(max_length=11, unique=True, verbose_name='手机号', blank=True)
-    current_ip = models.CharField(max_length=15, verbose_name='手机号')
+    current_ip = models.CharField(max_length=15, verbose_name='手机号', blank=True)
 
     class Meta:
         db_table = 'tb_users'

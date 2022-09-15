@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 import json
+from .models import User
 # Create your views here.
 
 def books_cates(request):
@@ -62,13 +63,32 @@ def login(request):
     #     return HttpResponse(json.dumps(resData))
 
 def register(request):
+    """
+        registerCode: 0(用户已存在，前端提示用户更换要注册的用户名)
+                      1(用户注册成功，然后让前端跳转登录)
+                      2(注册失败)
+    """
     if request.method == "POST":
+        # 反序列化
+        registerInfo = json.loads(request.body)
         # 查看当前用户账号是否有重复的
-        print("userName", request.POST)
-        print("request.body", request.body)
-
-        return HttpResponse("post请求")
-    return HttpResponse("hahaha")
+        try:
+            username_db = User.objects.get(username=registerInfo["username"])
+            return JsonResponse({"resCode": 0,
+                                 "mes": "当前注册的用户名已存在",
+                                 "registerCode": 0})
+        except Exception as e:
+            print("当前注册的用户名不存在")
+            # 生成用户数据进入表里
+            userInfo = User(
+                username = registerInfo["username"],
+                password = registerInfo["password"],
+                email = registerInfo["mail"]
+            )
+        return JsonResponse({"resCode":0,
+                             "mes":"当前注册的用户名不存在,已完成注册",
+                             "registerCode": 1})
+    return JsonResponse({"resCode": 0, "mes": None})
 
 def token(request):
     token = get_token(request)
