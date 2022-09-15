@@ -10,19 +10,33 @@ export function GetCates () {
   })
 }
 
-export function registerFrom () {
+export function registerFrom (data) {
   return service.request({
-    url: '/register/',
+    url: "/register/",
     method: 'post',
     withCredentials: true,
     xsrfCookieName: 'csrftoken',
     xsrfHeaderName: 'X-CSRFToken',
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      // "X-CSRFToken": this.submitToken,
+      // "X-CSRFToken": document.cookie,
+    },
+    data: JSON.stringify(data)
   })
 }
 
 export function formToken () {
   return service.request({
     url: '/token/',
+    method: 'get',
+  })
+}
+
+// 注销用户
+export function logOut (data) {
+  return service.request({
+    url: '/logout/',
     method: 'get',
   })
 }

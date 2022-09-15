@@ -5,15 +5,21 @@
 
       <div class="form">
         <label>用户名：</label>
-        <input type="text" v-model.trim="name" /><br />
+        <input type="text" v-model.trim="name" autocomplete="off" /><br />
       </div>
       <div class="form">
-        <label>密码：</label>
-        <input type="password" v-model.trim="password" /><br />
+        <form>
+          <label>密码：</label>
+          <input
+            type="password"
+            v-model.trim="password"
+            autocomplete="off"
+          /><br />
+        </form>
       </div>
       <div class="form">
         <label>邮箱：</label>
-        <input type="email" v-model.trim="mail" /><br />
+        <input type="email" v-model.trim="mail" autocomplete="off" /><br />
       </div>
       <!-- <div class="form">
         <label>手机号：</label>
@@ -27,7 +33,9 @@
 <script>
 import { registerFrom } from "@/apis/read.js";
 import { formToken } from "@/apis/read.js";
+import axios from "axios";
 import data from "bootstrap/js/dist/dom/data";
+import Qs from "qs";
 export default {
   name: "registerComp",
   props: {
@@ -46,19 +54,13 @@ export default {
     handlefinish: function () {
       // 当填写的用户名 密码 邮箱 内容不为空时，发送表单数据到服务端进行合规校验 重复校验
       if (this.name !== "" && this.password !== "" && this.mail !== "") {
-        registerFrom({
-          data: {
-            username: this.name,
-            password: this.password,
-            mail: this.mail,
-          },
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "X-CSRFToken": this.submitToken,
-            // "X-CSRFToken": document.cookie,
-          },
-        });
-        console.log("每个选项都填完了", data);
+        let data = {
+          username: this.name,
+          password: this.password,
+          mail: this.mail,
+        };
+        registerFrom(data);
+        localStorage.username = "11";
       } else if (this.name === "") {
         alert("用户名不能为空");
       } else if (this.password === "") {

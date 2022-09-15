@@ -37,8 +37,13 @@
               <template #button-content>
                 <em>用户中心</em>
               </template>
+              <b-dropdown-item href="userHome" v-show="true">
+                {{ username }}
+              </b-dropdown-item>
               <b-dropdown-item href="login">登录</b-dropdown-item>
-              <b-dropdown-item href="#">注销</b-dropdown-item>
+              <b-dropdown-item :href="logInOn">
+                {{ logInOnInfo }}
+              </b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
@@ -52,6 +57,14 @@ import { reactive } from "vue";
 import { GetCates } from "../../apis/read.js";
 export default {
   name: "pageHeader",
+  data() {
+    return {
+      logInOn: "register",
+      logInOnInfo: "注册用户",
+      showUserName: false,
+      username: "",
+    };
+  },
   // setup生命周期函数，较beforeCreate与created先前调用
   setup() {
     const headData = reactive({
@@ -65,6 +78,22 @@ export default {
     return {
       headData,
     };
+  },
+  mounted() {
+    // 查看缓存中是否有用户的名称
+    let user = localStorage.username;
+    if (user != undefined) {
+      console.log("用户信息存在");
+      this.username = user;
+      this.logInOn = "logOut";
+      this.logInOnInfo = "注销用户";
+      this.showUserName = true;
+    }
+    this.username = user;
+    this.logInOn = "register";
+    this.logInOnInfo = "注册用户";
+    this.showUserName = false;
+    // console.log("用户信息存在");
   },
 };
 </script>

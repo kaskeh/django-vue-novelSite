@@ -37,6 +37,7 @@ service.interceptors.response.use(
       // Message.error(data.message);
       console.log('request.js: 服务器有响应，但是并不是想要的数据')
       return Promise.reject(data.resCode)
+      // return response
     } else {
       // 服务器有响应，并且数据正确
       console.log('request.js: 服务器有响应，并且数据正确')
