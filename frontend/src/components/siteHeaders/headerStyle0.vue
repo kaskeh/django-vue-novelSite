@@ -37,13 +37,15 @@
               <template #button-content>
                 <em>用户中心</em>
               </template>
-              <b-dropdown-item href="userHome" v-show="true">
-                {{ username }}
+              <b-dropdown-item href="userHome" v-show="showUserName">
+                {{ username }}，欢迎回来！
               </b-dropdown-item>
-              <b-dropdown-item href="login">登录</b-dropdown-item>
-              <b-dropdown-item :href="logInOn">
-                {{ logInOnInfo }}
+              <b-dropdown-item href="login" v-show="!showUserName">
+                登录
               </b-dropdown-item>
+              <b-dropdown-item :href="logInOn">{{
+                logInOnInfo
+              }}</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
@@ -88,6 +90,7 @@ export default {
       this.logInOn = "logOut";
       this.logInOnInfo = "注销用户";
       this.showUserName = true;
+      return;
     }
     this.username = user;
     this.logInOn = "register";

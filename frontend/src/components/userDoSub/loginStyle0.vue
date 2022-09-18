@@ -2,7 +2,7 @@
   <div id="background">
     <div class="container">
       <form action="">
-        <h1>Login</h1>
+        <h1>登录</h1>
         <div class="form">
           <div class="item">
             <label>用户名：</label>
@@ -17,6 +17,7 @@
           </div>
           <div class="item">
             <label>密码：</label>
+            <!-- v-model.trim 将用户输入的前后的空格去掉 -->
             <input
               type="password"
               name="password"
@@ -36,7 +37,7 @@
           </div> -->
         </div>
       </form>
-      <button type="submit" @click.prevent="handlelogin">登录</button>
+      <button type="submit" @click.prevent="login_ButtonCheck">登录</button>
       <!-- v-on点击按钮触发handlelogin方法 -->
       <button @click.prevent="handleregister">注册</button>
       <router-view></router-view>
@@ -46,35 +47,68 @@
 
 <script>
 // import { thisExpression } from '@babel/types';
-
+import instance from "@/utils/login_request";
 export default {
   data() {
     return {
       name: "", //姓名，用v-model绑定监听，将输入的字符串赋值给name变量
       password: "", //密码
-      // st: "false", //false为不保存登录
     };
   },
   methods: {
-    handlelogin: function () {
-      if (
-        // this.name === localStorage["name"] &&
-        // this.password === localStorage["password"]
-        this.name &&
-        this.password
-      ) {
-        this.$router.push("/userHome"); //如果输入的名字以及密码正确路由跳转至个人页面
-      } else if (this.name === "") {
-        //名字为空
-        alert("用户名不为空");
-      } else if (this.password === "") {
-        //密码为空
-        alert("密码不为空");
-      } else {
-        alert("账号不存在，请注册后登录"); //查无此号
-        // console.log(this.name, this.password);
-      }
+    //点击【登录】后用自定义的instance方法发送axios请求
+    login_ButtonCheck: function () {
+      let usr_val = this.name;
+      let pwd_val = this.password;
+      // console.log("开始登录");
+      //自定义的instance方法向后端发起post请求，常规axios写法为 this.axios.post
+      instance
+        .post("/login/", {
+          username: usr_val,
+          password: pwd_val,
+        })
+        .then((res) => {
+          //登录成功
+          //用this.$store.commit调用上面store/index.js文件中vuex里自定义的mSetTokenInfo方法保存登录成功返回的token
+          //res.data.access是返回信息中token所在的字段名，如不知道请回顾上面Django中自定义返回信息里定义的token返回字段
+          this.$store.commit("mSetTokenInfo", res.data.data.access);
+          // console.log("用户的tokne", res.data.data.access);
+          //登录成功后跳转Home页并将用户信息传至Home页
+          this.$router.push({
+            name: "userHome",
+            param: {
+              username: res.data.data.username,
+              department: res.data.data.user_type,
+            },
+          });
+          // 刷新下用户名称
+          localStorage.setItem("username", res.data.user_name);
+          console.log("登录成功", res);
+        })
+        .catch((error) => {
+          //登录失败
+          console.log("登录失败", error);
+        });
     },
+    // handlelogin: function () {
+    //   if (
+    //     // this.name === localStorage["name"] &&
+    //     // this.password === localStorage["password"]
+    //     this.name &&
+    //     this.password
+    //   ) {
+    //     this.$router.push("/userHome"); //如果输入的名字以及密码正确路由跳转至个人页面
+    //   } else if (this.name === "") {
+    //     //名字为空
+    //     alert("用户名不为空");
+    //   } else if (this.password === "") {
+    //     //密码为空
+    //     alert("密码不为空");
+    //   } else {
+    //     alert("账号不存在，请注册后登录"); //查无此号
+    //     // console.log(this.name, this.password);
+    //   }
+    // },
     handleregister: function () {
       this.$router.push("/register"); //点击注册按钮，跳转至注册页面
     },

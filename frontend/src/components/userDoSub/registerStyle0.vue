@@ -32,7 +32,7 @@
 
 <script>
 import { registerFrom } from "@/apis/read.js";
-import { formToken } from "@/apis/read.js";
+import { regisToken } from "@/apis/read.js";
 import axios from "axios";
 import data from "bootstrap/js/dist/dom/data";
 import Qs from "qs";
@@ -60,7 +60,7 @@ export default {
           mail: this.mail,
         };
         registerFrom(data);
-        localStorage.username = "11";
+        // localStorage.username = "11";
       } else if (this.name === "") {
         alert("用户名不能为空");
       } else if (this.password === "") {
@@ -71,7 +71,7 @@ export default {
     },
   },
   mounted() {
-    formToken().then(
+    regisToken().then(
       (response) => (
         (this.submitToken = response.data.token),
         // (this.submitToken = document.cookie.split("=")[1]),

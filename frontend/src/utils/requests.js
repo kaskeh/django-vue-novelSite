@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import axios from "axios";
+import store from "@/store/index"; 
 
 // console.log("in request.js", process.env.NODE_ENV);
 
@@ -10,11 +11,21 @@ import axios from "axios";
 const BASEURL = process.env.NODE_ENV === 'production' ? '/api' : '/api'
 // console.log("in request.js: BASEURL = ", BASEURL);
 
-// 创建axios
+/* 
+自定义写法：const xxx = axios.create({}) 一个项目中可能有不同的服务器基础地址 就要用自定义写法设置不同的服务器基础地址 
+*/ 
+
+// 创建axios  axios.create(config) 对axios请求进行二次封装
 const service = axios.create({
   baseURL: BASEURL,
   timeout: 1800000
 })
+
+const instance = axios.create({
+  baseURL: BASEURL,
+  timeout: 1800000
+})
+
 
 // 请求拦截器： 在浏览器发送请求之前的处理; 用处：对真的发送请求之前可以判断，比如是否合法，是否符合请求参数的要求
 service.interceptors.request.use(
@@ -53,5 +64,22 @@ service.interceptors.response.use(
   }
 )
 
+// 在instance(这是上面定义的自定义axios请求名称)上添加请求拦截器 补充请求头token信息 
+instance.interceptors.request.use(
+  function(config) {
+    // 从vuex中取出token,这里先这样写，下面会说这里是怎么回事 
+    const token = store.state.token; 
+    // 如果有token则添加到headers中 
+    if (token) {  //这里的JWT是后端默认的token需要携带的字段，可在后端自定义，中间空格不能删除 }
+      config.headers.Authorization = `JWT ${token}`;
+      return config; 
+    }
+  },
+  function(error) {
+     return Promise.reject(error); 
+    }
+)
+
+
 // 对外暴露接口
-export default service
+export default service;
