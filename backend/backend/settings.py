@@ -135,9 +135,11 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+# 不必为用户模型设置主键。django将自动添加它, 理解为primary_key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_CREDENTIALS = True
+# 设置允许跨域的域名，*代表允许任意域名跨域
 CORS_ORIGIN_ALLOW_ALL = True
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8080']
 CORS_ORIGIN_WHITELIST = (
@@ -149,15 +151,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',# 填写发送请求端的地址
     'http://localhost:8000',
 )
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-    'VIEW',
-)
+# 允许的header类型
 CORS_ALLOW_HEADERS = (
     'XMLHttpRequest',
     'X_FILENAME',
@@ -171,12 +165,54 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
     'Pragma',
 )
+# 跨域允许的请求方式
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
 
-# 指定本项目用户模型类
-AUTH_USER_MODEL = "novel_site.User"
 
 # # 会话配置
 # SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 # SESSION_CACHE_ALIAS = "session"
 
-# APPEND_SLASH=False # 当有些请求没有以/结尾时，设置这个可以让检测略过
+APPEND_SLASH=False # 当有些请求没有以/结尾时，设置这个可以让检测略过
+
+# REST_FRAMEWORK中全局配置认证方式、权限方式。局部认证网上一大堆，请自查……^ ^
+# 如settings.py文件中没有REST_FRAMEWORK，请自主写入
+REST_FRAMEWORK = {
+    # DEFAULT_PERMISSION_CLASSES设置默认的权限类，通过认证后赋予用户的权限
+    'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAuthenticated', ),
+    # DEFAULT_AUTHENTICATION_CLASSES设置默认的认证类，这里用token，也可以设置session或自定义的认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework_simplejwt.authentication.JWTAuthentication', # 进行token认证
+    )
+}
+
+# SIMPLE_JWT是token配置项，参数很多，不一一列举，请自查……^ ^
+import datetime # 导入datetime库生成时间参数
+SIMPLE_JWT = {
+     # ACCESS_TOKEN_LIFETIME设置token令牌有效时间
+     # rest_framework_simplejwt官方默认有效时间是5分钟，这里改成15天
+     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=15),
+    # REFRESH_TOKEN_LIFETIME设置token刷新令牌有效时间
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
+}
+
+# AUTH_USER_MODEL是配置默认的校验数据表，取决你自己的用户表
+# 参数格式为：(你自己创建的app文件夹名称).(app文件夹中models.py中用户表名称)
+# 以下 login 为我创建的app文件夹名称， UserInfo 为login下的models.py中的用户表名称
+AUTH_USER_MODEL = 'novel_site.User'
+
+AUTH_PASSWORD_VALIDATORS = [ # 是配置创建用户时的默认参数，这里密码长度最小为5位字符，系统默认时8位 AUTH_PASSWORD_VALIDATORS = [
+     {
+          # 设置密码最小长度为5
+          'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+          'OPTIONS': {'min_length': 5}
+      },
+]

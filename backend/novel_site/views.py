@@ -3,6 +3,12 @@ from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 import json
 from .models import User
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializer import MyTokenObtainPairSerializer
+
+from rest_framework.views import APIView
+
 # Create your views here.
 
 def books_cates(request):
@@ -69,6 +75,9 @@ def register(request):
                       2(注册失败)
     """
     if request.method == "POST":
+
+        # 用提交的数据生成表单
+
         # 反序列化
         registerInfo = json.loads(request.body)
         # 查看当前用户账号是否有重复的
@@ -82,9 +91,12 @@ def register(request):
             # 生成用户数据进入表里
             userInfo = User(
                 username = registerInfo["username"],
-                password = registerInfo["password"],
                 email = registerInfo["mail"]
             )
+            # 不可使用 password = registerInfo["password"]的方式直接赋值
+            # 要使用set_password（）的辅助方法对明文密码哈希索引加密
+            userInfo.set_password(str(registerInfo["password"]))
+            userInfo.save()
         return JsonResponse({"resCode":0,
                              "mes":"当前注册的用户名不存在,已完成注册",
                              "registerCode": 1})
@@ -95,3 +107,17 @@ def token(request):
     result = {"resCode": 0,'token': token}
     # return JsonResponse()
     return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
+
+# 指定它的序列化器为我们自定义的序列化器MyTokenObtainPairSerializer
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+class Aa(APIView):
+    def get(self, request):   #         # 请求为get时的业务逻辑
+        """业务逻辑"""
+        print("haha")
+        return XXXXX
+
+    def post(self, request): # 请求为post时的业务逻辑
+        """业务逻辑"""
+        return XXXXX
