@@ -2,9 +2,10 @@
   <div id="bg">
     <div id="container">
       <h1>个人信息</h1>
-      <p><span>姓名：</span>{{ sname }}</p>
+      <p><span>账号：</span>{{ sname }}</p>
       <p><span>邮箱:</span>{{ smail }}</p>
       <p><span>手机号：</span>{{ stel }}</p>
+      <button @click.prevent="comeIndex">返回主页</button>
       <button @click.prevent="logout">退出</button>
     </div>
   </div>
@@ -16,18 +17,29 @@ export default {
   data() {
     return {
       //获取用户信息到主页
-      sname: localStorage.getItem("name"),
+      sname: localStorage.getItem("username"),
       smail: localStorage.getItem("mail"),
       stel: localStorage.getItem("tel"),
     };
   },
   methods: {
+    comeIndex: function () {
+      this.$router.replace("/"); //页面跳转至站点主页面
+    },
     //当点击退出按钮，将不保存登录状态
     logout: function () {
-      this.isAuth = "false"; //修改登录状态
-      localStorage.setItem("s", this.isAuth);
       this.$router.replace("/login"); //页面跳转至登录页面
+      window.localStorage.clear();
+      window.document.cookie.clear();
+
+      // 发送一个通知到服务端，告知该用户退出了
     },
+  },
+  mounted() {
+    if (!localStorage.getItem("username")) {
+      console.log("当前用户信息不存在");
+      this.$router.replace("/login"); //页面跳转至登录页面
+    }
   },
 };
 </script>

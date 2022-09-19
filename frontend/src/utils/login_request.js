@@ -16,6 +16,7 @@ instance.interceptors.request.use(
     // 如果有token则添加到headers中
     if (token) {
       //这里的JWT是后端默认的token需要携带的字段，可在后端自定义，中间空格不能删除 }
+      // 前端在每次请求时将JWT放入HTTP Header中的Authorization位。(解决XSS和XSRF问题)
       config.headers.Authorization = `JWT ${token}`;
       // console.log("本地有token", token);
     }
