@@ -1,6 +1,5 @@
 <template>
-  <div id="HomeCate">
-    <Header />
+  <div id="lastUpdate">
     <b-container class="mt-4 mb-2">
       <div v-if="items.newestItems.length == 0">您要查询的分类页面不存在哦</div>
       <div v-else>
@@ -21,7 +20,7 @@
                     aria-colindex="1"
                     class=""
                   >
-                    <div>小说</div>
+                    <div>小说分类</div>
                   </th>
                   <th
                     role="columnheader"
@@ -29,12 +28,28 @@
                     aria-colindex="2"
                     class=""
                   >
-                    <div>最新章节</div>
+                    <div>小说</div>
                   </th>
                   <th
                     role="columnheader"
                     scope="col"
                     aria-colindex="3"
+                    class=""
+                  >
+                    <div>小说作者</div>
+                  </th>
+                  <th
+                    role="columnheader"
+                    scope="col"
+                    aria-colindex="4"
+                    class=""
+                  >
+                    <div>最新章节</div>
+                  </th>
+                  <th
+                    role="columnheader"
+                    scope="col"
+                    aria-colindex="5"
                     class=""
                   >
                     <div>更新时间</div>
@@ -44,9 +59,25 @@
               <tbody role="rowgroup">
                 <tr role="row" v-for="item in items.newestItems" :key="item.id">
                   <td aria-colindex="1" role="cell" class="">
-                    <a :href="'/book/' + item.book_id">{{ item.book_name }}</a>
+                    <!-- <a :href="'/book/' + item.book_id">
+                      {{ item.book_name }}
+                    </a> -->
+                    <p>{{ item.book_cate }}</p>
                   </td>
                   <td aria-colindex="2" role="cell" class="">
+                    <a
+                      :href="
+                        '/book/' + item.book_id + '/' + item.book_newest_url
+                      "
+                    >
+                      {{ item.book_name }}
+                    </a>
+                  </td>
+                  <td aria-colindex="3" role="cell" class="">
+                    <!-- {{ dateFormat(item.book_last_update_time) }} -->
+                    {{ item.book_author }}
+                  </td>
+                  <td aria-colindex="4" role="cell" class="">
                     <a
                       :href="
                         '/book/' + item.book_id + '/' + item.book_newest_url
@@ -55,7 +86,8 @@
                       {{ item.book_newest_name }}
                     </a>
                   </td>
-                  <td aria-colindex="3" role="cell" class="">
+                  <td aria-colindex="5" role="cell" class="">
+                    <!-- {{ dateFormat(item.book_last_update_time) }} -->
                     {{ item.book_last_update_time }}
                   </td>
                 </tr>
@@ -94,7 +126,9 @@
               <tbody role="rowgroup">
                 <tr role="row" v-for="item in items.mostItems" :key="item.id">
                   <td aria-colindex="1" role="cell" class="">
-                    <a :href="'/book/' + item.book_id">{{ item.book_name }}</a>
+                    <a :href="'/book/' + item.book_id">
+                      {{ item.book_name }}
+                    </a>
                   </td>
                   <td aria-colindex="2" role="cell" class="">
                     <a
@@ -112,21 +146,14 @@
         </b-row>
       </div>
     </b-container>
-    <Footer />
   </div>
 </template>
-
 <script>
-import Header from "../components/siteHeaders/headerStyle0.vue";
-import Footer from "../components/siteFooters/footerStyle0.vue";
-import { ref, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+// import { ref, reactive, onMounted } from "@vue/composition-api";
 export default {
-  name: "HomeCate",
-  components: {
-    Header,
-    Footer,
-  },
+  name: "lastUpdate",
   data() {
     return {
       items: {
@@ -217,14 +244,26 @@ export default {
       },
     };
   },
-  // setup(props, context) {
-  //   const router = useRoute();
-  //   console.log("router111", router.path);
-  //   // onMounted(() => {
-  //   //   console.log("In homeCate context:", context);
-  //   // });
-  // },
+
+  setup(props, context) {
+    // const now_url = ref(this.$router.path); vue2获取当前路径的写法
+    const now_url = useRouter().currentRoute.value.fullPath;
+    console.log("当前url", now_url);
+
+    // const newstParams = reactive({
+    //   url: now_url.value,
+    //   key: "newest",
+    // });
+
+    // const mostParams = reactive({
+    //   url: now_url.value,
+    //   key: "most",
+    // });
+
+    // const items = reactive({
+    //   newestItems: [],
+    //   mostItems: [],
+    // });
+  },
 };
 </script>
-
-<style></style>
