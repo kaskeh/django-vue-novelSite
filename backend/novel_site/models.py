@@ -7,7 +7,7 @@ class User(AbstractUser):
     '''
         自定义用户模型类
     '''
-    mobile = models.CharField(max_length=11, verbose_name='手机号', blank=True)  # , unique=True
+    mobile_phone = models.CharField(max_length=11, verbose_name='手机号', blank=True, null=True, unique=True)  # , unique=True
     current_ip = models.CharField(max_length=15, verbose_name='手机号', blank=True)
     # 虽然主键由setting.py中的DEFAULT_AUTO_FIELD自动生成了，但主键位数太差了，重新用uuid生成一些唯一的区别设置
     user_uuid = models.UUIDField(default=uuid.uuid4, editable=False)

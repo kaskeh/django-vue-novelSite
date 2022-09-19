@@ -9,7 +9,6 @@ app_name = 'novel_site'
 urlpatterns = [
     path('books_cates/', views.books_cates, name="books_cates"),
     path('<int:id>/', views.accounts, name="accounts"),
-    path('aa/', views.Aa.as_view(), name="login_Aa"),
     path('register/', views.register, name="register_account"),
     path('regisToken/', views.token, name="regisToken"),
     # 验证用户并生成token
@@ -18,4 +17,7 @@ urlpatterns = [
     path('loginToken/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # 获取令牌并指示它是否有效。此视图不提供关于令牌适用于特定用途的信息
     path('loginToken/verrify/', TokenVerifyView.as_view(), name='token_verrify'),
+    path('LoginView/', views.LoginView.as_view(), name="LoginView"),
+    path('userTest/', views.userTest, name="userTest"),
+    path('userTest2/', views.userTest2, name="userTest2"),
 ]

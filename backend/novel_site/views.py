@@ -4,10 +4,13 @@ from django.middleware.csrf import get_token
 import json
 from .models import User
 
+from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializer import MyTokenObtainPairSerializer
 
-from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -112,12 +115,53 @@ def token(request):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-class Aa(APIView):
+class LoginView(APIView):
     def get(self, request):   #         # 请求为get时的业务逻辑
         """业务逻辑"""
         print("haha")
-        return XXXXX
+        return HttpResponse("认证通过，get")
 
     def post(self, request): # 请求为post时的业务逻辑
         """业务逻辑"""
-        return XXXXX
+
+        #获取前端提交的用户名
+        account = request.data.get("username")
+        # 获取前端提交的密码
+        password = request.data.get("password")
+        return HttpResponse("认证通过，post")
+
+class RegisterView(APIView):
+    def get(self, request):   #         # 请求为get时的业务逻辑
+        """业务逻辑"""
+        print("haha")
+        return HttpResponse("认证通过，get")
+
+    def post(self, request): # 请求为post时的业务逻辑
+        """业务逻辑"""
+
+        username = request.data.get("username")
+        passwd = request.data.get("password")
+        email = request.data.get("mail")
+
+        # 如果用户名存在则响应客户端用户名已存在，获取用户名 模型类.objects.filter(条件)
+        if User.objects.filter(username=username):
+            return Response({"code": 407, "msg": "用户名已被注册"})
+        try:
+            User.objects.create(username=username, password=passwd, email=email)
+        except Exception as e:
+            print("注册出现问题", e)
+            return Response({"code": 405, "msg": "注册失败"})
+
+        return Response({"code": 200, "msg": "注册成功"})
+
+# @csrf_exempt  # 屏蔽跨域检测，不进行csrf保护
+# @csrf_protect 是 开启csrf验证的装饰器
+def userTest(request):
+    print(request.body)
+
+    return HttpResponse("111")
+
+def userTest2(request):
+    print(request.body)
+
+    return HttpResponse("222")

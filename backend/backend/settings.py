@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    "rest_framework",
     'novel_site',
     'corsheaders',  # 添加：跨域组件
 ]
 
 MIDDLEWARE = [
+    # 跨域的中间件
     'corsheaders.middleware.CorsMiddleware',  # 添加：放首行（放其他行未测试）
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -187,11 +189,14 @@ APPEND_SLASH=False # 当有些请求没有以/结尾时，设置这个可以让�
 # 如settings.py文件中没有REST_FRAMEWORK，请自主写入
 REST_FRAMEWORK = {
     # DEFAULT_PERMISSION_CLASSES设置默认的权限类，通过认证后赋予用户的权限
-    'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAuthenticated', ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     # DEFAULT_AUTHENTICATION_CLASSES设置默认的认证类，这里用token，也可以设置session或自定义的认证
     'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework_simplejwt.authentication.JWTAuthentication', # 进行token认证
-    )
+        'rest_framework_simplejwt.authentication.JWTAuthentication', # 进行token认证
+    ),
+    "PAGE_SIZE": 10
 }
 
 # SIMPLE_JWT是token配置项，参数很多，不一一列举，请自查……^ ^
@@ -202,6 +207,9 @@ SIMPLE_JWT = {
      'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=15),
     # REFRESH_TOKEN_LIFETIME设置token刷新令牌有效时间
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
+    # 修改Authorization参数的认证数据前缀，使得与前端那边设置的 "JWT"一致
+    # 免得出现{'detail': 'Authentication credentials were not provided.'}问题
+    'AUTH_HEADER_TYPES': ('JWT',),
 }
 
 # AUTH_USER_MODEL是配置默认的校验数据表，取决你自己的用户表
