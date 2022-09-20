@@ -72,54 +72,12 @@
             </table>
           </b-col>
           <b-col cols="12" md="1"></b-col>
-          <b-col cols="12" md="4">
-            <h4>最多阅读的小说</h4>
-            <table
-              role="table"
-              aria-busy="false"
-              aria-colcount="3"
-              class="table b-table table-striped table-hover"
-            >
-              <thead role="rowgroup" class="">
-                <tr role="row" class="">
-                  <th
-                    role="columnheader"
-                    scope="col"
-                    aria-colindex="1"
-                    class=""
-                  >
-                    <div>小说</div>
-                  </th>
-                  <th
-                    role="columnheader"
-                    scope="col"
-                    aria-colindex="2"
-                    class=""
-                  >
-                    <div>作者</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody role="rowgroup">
-                <tr role="row" v-for="item in items.mostItems" :key="item.id">
-                  <td aria-colindex="1" role="cell" class="">
-                    <a :href="'/book/' + item.book_id">{{ item.book_name }}</a>
-                  </td>
-                  <td aria-colindex="2" role="cell" class="">
-                    <a
-                      :href="
-                        '/book/' + item.book_id + '/' + item.book_newest_url
-                      "
-                    >
-                      {{ item.book_author }}
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </b-col>
         </b-row>
       </div>
+
+      <!-- 添加个分页功能 -->
+      <br />
+      <el-pagination background layout="prev, pager, next" :total="1000" />
     </b-container>
     <Footer />
   </div>
