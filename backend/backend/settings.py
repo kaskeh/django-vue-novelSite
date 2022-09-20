@@ -80,9 +80,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+'default': {
+    	'ENGINE': 'django.db.backends.mysql', # 数据库引擎
+     	'HOST': '127.0.0.1', # 数据库主机
+      	'PORT': 3306, # 数据库端口
+       	'USER': 'root', # 数据库用户名root
+        'PASSWORD': "12345@admin", # 数据库用户密码
+        'NAME': 'books' # 数据库名字
     }
 }
 
@@ -196,7 +204,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication', # 进行token认证
     ),
-    "PAGE_SIZE": 10
+    # 默认的页面大小分页设置
+    # "PAGE_SIZE": 10
+    # 默认分页类
+    # 'DEFAULT_PAGINATION_CLASS':['app01.myuntils.Page2', 'app01.myuntils.Page3',],
 }
 
 # SIMPLE_JWT是token配置项，参数很多，不一一列举，请自查……^ ^
