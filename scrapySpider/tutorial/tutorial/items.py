@@ -16,3 +16,4 @@ class TutorialItem(scrapy.Item):
     # type = scrapy.Field()   # 小说类型
     author = scrapy.Field() # 小说作者
     descp = scrapy.Field()  # 小说简介
+    novelLink = scrapy.Field() # 小说入口链接

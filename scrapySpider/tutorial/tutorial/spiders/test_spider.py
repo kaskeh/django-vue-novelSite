@@ -13,6 +13,7 @@ class testSpider(scrapy.Spider):
         # 方法二中进行页数的累加操作
         global count
         count += 1
+        print("当前处在第{}页".format(count))
 
         divList = response.xpath("//div[@class='tui_1 fenlei']/div")
         # print(len(divList))
@@ -20,15 +21,23 @@ class testSpider(scrapy.Spider):
         for div in divList:
             # 封面图片链接
             imgLink = div.xpath("./a/img/@src").extract()[0]
+            # 小说名称
             title = div.xpath("./div//a/@title").extract()[0]
+            # 作者
             author = div.xpath("./div//span/text()").extract()[0]
+            # 小说简介
             descp = div.xpath("./div/p/text()").extract()[0]
+            # 小说链接
+            novelLink = div.xpath("./div//a/@href").extract()[0]
 
+            # print("novelLink", novelLink)
             # 无任何方法的，数据对象，类似基础库中的collections库
             item = TutorialItem(imgLink = "https://www.biquge7.top/" + imgLink,
                                     title = title,
                                     author = author,
-                                    descp = descp)
+                                    descp = descp,
+                                    novelLink = novelLink
+                                )
 
             # print(item)
 

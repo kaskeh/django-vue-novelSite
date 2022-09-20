@@ -13,7 +13,7 @@ class TutorialPipeline:
         # 打开文件，指定方式为写，利用第3个参数把csv写数据时产生的空行消除
         self.f = open("novel.csv", "w", encoding="UTF-8", newline="")
         # 设置文件第一行的字段名，注意要跟spider传过来的字典key名称相同
-        self.file_name = ["imgLink", "title", "author", "descp"]
+        self.file_name = ["imgLink", "title", "author", "descp", "novelLink"]
         # 指定文件的写入方式为csv字典写入，参数1为指定具体文件，参数2为指定字段名
         self.writer = csv.DictWriter(self.f, fieldnames=self.file_name)
         # 写入第一行字段名，因为只要写入一次，所以文件放在__init__里面
