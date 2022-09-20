@@ -1,7 +1,16 @@
 <template>
   <div id="HomeCate">
     <Header />
+
     <b-container class="mt-4 mb-2">
+      <!-- 添加一个面包屑导航栏 -->
+      <el-breadcrumb :separator-icon="ArrowRight">
+        <el-breadcrumb-item :to="{ path: '/' }">可容书阁</el-breadcrumb-item>
+        <el-breadcrumb-item>玄幻</el-breadcrumb-item>
+      </el-breadcrumb>
+
+      <br />
+
       <div v-if="items.newestItems.length == 0">您要查询的分类页面不存在哦</div>
       <div v-else>
         <b-row>
@@ -117,10 +126,13 @@
 </template>
 
 <script>
-import Header from "../components/siteHeaders/headerStyle0.vue";
-import Footer from "../components/siteFooters/footerStyle0.vue";
 import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+
+import { ArrowRight } from "@element-plus/icons-vue";
+
+import Header from "../components/siteHeaders/headerStyle0.vue";
+import Footer from "../components/siteFooters/footerStyle0.vue";
 export default {
   name: "HomeCate",
   components: {
