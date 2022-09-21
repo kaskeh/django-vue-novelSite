@@ -66,8 +66,10 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+# 管道的值为优先级，数字越小越优先
 ITEM_PIPELINES = {
    'tutorial.pipelines.TutorialPipeline': 300,
+   # 'tutorial.pipelines.novelChapterPipeline': 299
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
