@@ -14,7 +14,9 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+# BASE_DIR = os.path.dirname(op.path.dirname(os.path.abspath(__file__
+# .
+# )))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -235,3 +237,6 @@ AUTH_PASSWORD_VALIDATORS = [ # 是配置创建用户时的默认参数，这里�
           'OPTIONS': {'min_length': 5}
       },
 ]
+
+
+

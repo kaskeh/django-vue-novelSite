@@ -2,6 +2,9 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+# 把可能多处用到的基础模型抽取到一个公共文件中
+from ..backend.uitls.models import BaseModel
+
 # Create your models here.
 class User(AbstractUser):
     '''
@@ -21,9 +24,8 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-
 # 作者表
-class authors(models.Model):
+class authors(BaseModel, models.Model):
     author_id = models.CharField(max_length=20,
                                  null=False,
                                  verbose_name='作者编号',
@@ -36,13 +38,15 @@ class authors(models.Model):
     CREATED_BY = models.CharField(max_length=20,
                                   null=False,
                                   verbose_name="创建人")
-    # auto_now_add=True，设置只记录第一次创建的时间，后续不会进行时间上的变更
-    CREATED_TIME = models.DateTimeField(auto_now_add=True)
-    UPDATED_BY = models.CharField(max_length=20,
-                                  null=False,
-                                  verbose_name="更新人")
-    # auto_now=True，设置当每次更新时，都以当前时间记录
-    UPDATED_TIME = models.DateTimeField(auto_now=True)
+
+    # 不直接定义了，通过继承上面的基类模型进行添加
+    # # auto_now_add=True，设置只记录第一次创建的时间，后续不会进行时间上的变更
+    # CREATED_TIME = models.DateTimeField(auto_now_add=True)
+    # UPDATED_BY = models.CharField(max_length=20,
+    #                               null=False,
+    #                               verbose_name="更新人")
+    # # auto_now=True，设置当每次更新时，都以当前时间记录
+    # UPDATED_TIME = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.author_name
@@ -83,17 +87,17 @@ class novel(models.Model):
     # 外键
     author_fk = models.ForeignKey("authors", on_delete=models.CASCADE)
 
-
-    CREATED_BY = models.CharField(max_length=20,
-                                  null=False,
-                                  verbose_name="创建人")
-    # auto_now_add=True，设置只记录第一次创建的时间，后续不会进行时间上的变更
-    CREATED_TIME = models.DateTimeField(auto_now_add=True)
-    UPDATED_BY = models.CharField(max_length=20,
-                                  null=False,
-                                  verbose_name="更新人")
-    # auto_now=True，设置当每次更新时，都以当前时间记录
-    UPDATED_TIME = models.DateTimeField(auto_now=True)
+    # 不直接定义了，通过继承上面的基类模型进行添加
+    # CREATED_BY = models.CharField(max_length=20,
+    #                               null=False,
+    #                               verbose_name="创建人")
+    # # auto_now_add=True，设置只记录第一次创建的时间，后续不会进行时间上的变更
+    # CREATED_TIME = models.DateTimeField(auto_now_add=True)
+    # UPDATED_BY = models.CharField(max_length=20,
+    #                               null=False,
+    #                               verbose_name="更新人")
+    # # auto_now=True，设置当每次更新时，都以当前时间记录
+    # UPDATED_TIME = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.novel_name
@@ -116,16 +120,17 @@ class novels(models.Model):
     novel_content = models.TextField(verbose_name="小说内容",
                                       null=False)
 
-    CREATED_BY = models.CharField(max_length=20,
-                                  null=False,
-                                  verbose_name="创建人")
-    # auto_now_add=True，设置只记录第一次创建的时间，后续不会进行时间上的变更
-    CREATED_TIME = models.DateTimeField(auto_now_add=True)
-    UPDATED_BY = models.CharField(max_length=20,
-                                  null=False,
-                                  verbose_name="更新人")
-    # auto_now=True，设置当每次更新时，都以当前时间记录
-    UPDATED_TIME = models.DateTimeField(auto_now=True)
+    # 不直接定义了，通过继承上面的基类模型进行添加
+    # CREATED_BY = models.CharField(max_length=20,
+    #                               null=False,
+    #                               verbose_name="创建人")
+    # # auto_now_add=True，设置只记录第一次创建的时间，后续不会进行时间上的变更
+    # CREATED_TIME = models.DateTimeField(auto_now_add=True)
+    # UPDATED_BY = models.CharField(max_length=20,
+    #                               null=False,
+    #                               verbose_name="更新人")
+    # # auto_now=True，设置当每次更新时，都以当前时间记录
+    # UPDATED_TIME = models.DateTimeField(auto_now=True)
 
     # 外键
     novel_fk = models.ForeignKey("novel", on_delete=models.CASCADE)
