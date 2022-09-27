@@ -6,7 +6,7 @@
       <div class="login-title">
         <img src="/static/image/Logotitle.1ba5466.png" alt="" />
         <!-- <img src="../../../../static/image/Logotitle.1ba5466.png" alt="" /> -->
-        <p>帮助有志向的年轻人通过努力学习获得体面的工作和生活!</p>
+        <!-- <p>帮助有志向的年轻人通过努力学习获得体面的工作和生活!</p> -->
       </div>
       <div class="login_box">
         <div class="title">
@@ -49,7 +49,7 @@
           <p class="go_login">
             没有账号
             <span>
-              <router-link to="/user/register">立即注册</router-link>
+              <router-link to="/register">立即注册</router-link>
             </span>
           </p>
         </div>
@@ -71,7 +71,7 @@
           <p class="go_login">
             没有账号
             <span>
-              <router-link to="/user/register">立即注册</router-link>
+              <router-link to="/register">立即注册</router-link>
             </span>
           </p>
         </div>
@@ -134,7 +134,7 @@ export default {
           // sessionStorage.credit_rmb = res.data.credit_rmb;
 
           let self = this;
-          self.$alert(`欢迎登陆回来！`, `可容书阁`, {
+          self.$alert(`欢迎回来！`, `可容书阁`, {
             callback() {
               // 返回本页
               self.$router.go(0);

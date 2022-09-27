@@ -5,6 +5,7 @@ import CateView from "../views/CateView.vue";
 // 用户相关页面
 import userHome from "../views/userViews/homeView.vue";
 import loginView from "../views/userViews/loginView.vue";
+import logoutView from "../views/userViews/logoutView.vue";
 import registerView from "../views/userViews/registerView.vue";
 
 const routes = [
@@ -19,9 +20,14 @@ const routes = [
     component: CateView,
   },
   {
-    path: "/userHome",
-    name: "userHome",
+    path: "/homeUser",
+    name: "userhome",
     component: userHome,
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: registerView,
   },
   {
     path: "/login",
@@ -29,9 +35,9 @@ const routes = [
     component: loginView,
   },
   {
-    path: "/register",
-    name: "register",
-    component: registerView,
+    path: "/logout",
+    name: "logout",
+    component: logoutView,
   },
   // {
   //   path: "/about",

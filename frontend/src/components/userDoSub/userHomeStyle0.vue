@@ -3,8 +3,8 @@
     <div id="container">
       <h1>个人信息</h1>
       <p><span>账号：</span>{{ sname }}</p>
-      <p><span>邮箱:</span>{{ smail }}</p>
-      <p><span>手机号：</span>{{ stel }}</p>
+      <!-- <p><span>邮箱:</span>{{ smail }}</p>
+      <p><span>手机号：</span>{{ stel }}</p> -->
       <button @click.prevent="comeIndex">返回主页</button>
       <button @click.prevent="logout">退出</button>
     </div>
@@ -17,9 +17,9 @@ export default {
   data() {
     return {
       //获取用户信息到主页
-      sname: localStorage.getItem("username"),
-      smail: localStorage.getItem("mail"),
-      stel: localStorage.getItem("tel"),
+      sname: localStorage.getItem("user_name"),
+      // smail: localStorage.getItem("mail"),
+      // stel: localStorage.getItem("tel"),
     };
   },
   methods: {
@@ -36,7 +36,7 @@ export default {
     },
   },
   mounted() {
-    if (!localStorage.getItem("username")) {
+    if (!localStorage.getItem("user_name")) {
       console.log("当前用户信息不存在");
       this.$router.replace("/login"); //页面跳转至登录页面
     }

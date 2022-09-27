@@ -37,15 +37,15 @@
               <template #button-content>
                 <em>用户中心</em>
               </template>
-              <b-dropdown-item href="userHome" v-show="showUserName">
+              <b-dropdown-item href="/homeUser" v-show="showUserName">
                 {{ username }}，欢迎回来！
               </b-dropdown-item>
               <b-dropdown-item href="/login" v-show="!showUserName">
                 登录
               </b-dropdown-item>
-              <b-dropdown-item :href="logInOn">{{
-                logInOnInfo
-              }}</b-dropdown-item>
+              <b-dropdown-item :href="logInOn">
+                {{ logInOnInfo }}
+              </b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
@@ -83,7 +83,7 @@ export default {
   },
   mounted() {
     // 查看缓存中是否有用户的名称
-    let user = localStorage.username;
+    let user = localStorage.user_name;
     if (user != undefined) {
       console.log("用户信息存在");
       this.username = user;
@@ -97,6 +97,11 @@ export default {
     this.logInOnInfo = "注册用户";
     this.showUserName = false;
     // console.log("用户信息存在");
+  },
+  methods: {
+    userLogOut() {
+      console.log("用户退出");
+    },
   },
 };
 </script>
