@@ -40,7 +40,7 @@
               <b-dropdown-item href="userHome" v-show="showUserName">
                 {{ username }}，欢迎回来！
               </b-dropdown-item>
-              <b-dropdown-item href="login" v-show="!showUserName">
+              <b-dropdown-item href="/login" v-show="!showUserName">
                 登录
               </b-dropdown-item>
               <b-dropdown-item :href="logInOn">{{

@@ -1,15 +1,15 @@
 <template>
   <div id="pageBody">
     <div>
-      <lastUpdate />
+      <bodyPart3 />
     </div>
   </div>
 </template>
 <script>
-import lastUpdate from "./bodyComps/newUpdateNovels.vue";
+import bodyPart3 from "./bodyComps/bodyPart3.vue";
 export default {
   components: {
-    lastUpdate,
+    bodyPart3,
   },
 };
 </script>

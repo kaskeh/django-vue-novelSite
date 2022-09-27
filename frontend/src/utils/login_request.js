@@ -1,7 +1,8 @@
 import axios from "axios";
 import store from "@/store/index";
 
-const BASEURL = process.env.NODE_ENV === "production" ? "/api" : "/api";
+// const BASEURL = process.env.NODE_ENV === "production" ? "/api" : "/api";
+const BASEURL = process.env.NODE_ENV === "production" ? "/user" : "/user";
 
 const instance = axios.create({
   baseURL: BASEURL,
