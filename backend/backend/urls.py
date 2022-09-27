@@ -19,7 +19,9 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('novel_site.urls', namespace="novel_site")),
-    # path('accounts/', include('novel_site.urls', namespace="novel_site")),
+    path('api/', include('home.urls')),
+    # 用户模块
+    path('user/', include('user.urls')),
+
 
 ]

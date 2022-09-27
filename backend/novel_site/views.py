@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 import json
-from .models import User
+# from .models import User
 
 from django.views.decorators.csrf import csrf_exempt
 
