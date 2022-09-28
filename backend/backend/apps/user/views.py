@@ -1,7 +1,9 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from django.contrib.auth.backends import ModelBackend
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+
 from rest_framework.views import APIView
 from rest_framework.views import Response
 from rest_framework.permissions import IsAuthenticated
@@ -9,9 +11,10 @@ from rest_framework_simplejwt import authentication
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework import status
 from rest_framework import permissions
-##
-from .serializers import MyTokenSerializer
+from rest_framework.generics import CreateAPIView
 
+from .serializers import MyTokenSerializer, RegisterSerializer
+from .models import User
 
 # Create your views here.
 
@@ -19,10 +22,12 @@ from .serializers import MyTokenSerializer
 def ListShops(requests):
     return HttpResponse("this is shop list")
 
-
+# 带有权限认证的视图
 class DetailsView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = (authentication.JWTAuthentication,)
+
+    # 会覆盖setting.py中设置的，等于是这里设置的优先级高
+    permission_classes = [permissions.IsAuthenticated]   # 权限过滤，通过的返回True
+    authentication_classes = (authentication.JWTAuthentication,)   # 认证过滤
 
     def get(self, request, *args, **kwargs):
         print('authenticate: ', request.successful_authenticator.authenticate(request))
@@ -34,7 +39,6 @@ class DetailsView(APIView):
 
     def post(self, request, *args, **kwargs):
         return Response('post ok')
-
 
 # 自定义的登陆视图
 class LoginView(TokenViewBase):
@@ -50,3 +54,20 @@ class LoginView(TokenViewBase):
             raise ValueError(f'验证失败： {e}')
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+# 自定义注册视图
+class RegisterView(CreateAPIView):
+    # queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+
+# 自定义验证登录后台
+class myBackend(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        User = get_user_model()
+        try:
+            # 可以通过三种方式进行登录，用户账号，用户邮箱，用户手机号码
+            user = User.objects.get(Q(username=username)|Q(email=username)|Q(mobile=username))
+            if user.check_password(password):
+                return user
+        except Exception as e:
+            return None

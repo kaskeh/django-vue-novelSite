@@ -11,3 +11,17 @@ def jwt_response_payload_handler(token, user=None, request=None):
         "username": user.username
         # 'user': UserSerializer(user, context={'request': request}).data
     }
+
+
+def get_user_by_account(account):
+    """
+    根据账号获取user对象
+    ：parms account：账号，可以是用户名username，也可以是手机号mobile，或者是其他
+    ：return： User对象 或者 None
+    """
+    try:
+        user = User.objects.filter(Q(username=account)|Q(mobile=account)).first()
+    except User.DoseNotExist:
+        return None
+    else:
+        return user

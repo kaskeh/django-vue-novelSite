@@ -146,11 +146,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "user.User"
 
 REST_FRAMEWORK = {
-    # # 设置所有接口到需要被验证
-    # "DEFAULT_PERMISSION_CLASS": (
-    #     # 设置所有接口都需要被验证
-    #     "rest_framework.permission.IsAuthenticated", # 默认权限位验证用户
-    # ),
+    # 设置所有接口到需要被验证
+    "DEFAULT_PERMISSION_CLASS": (
+        # 设置所有接口都需要被验证
+        "rest_framework.permission.AllowAny", # 默认权限位验证用户
+    ),
 
     # 用户登录的认证方式
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -165,3 +165,37 @@ SIMPLE_JWT = {
     # token刷新后的有效时间
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
 }
+
+AUTHENTICATION_BACKENDS = (
+    'user.views.myBackend',
+)
+
+CACHES = {
+    # 默认的Redis配置项，采用0号Redis库
+    "default": { # 默认
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # session存储机制,采用0号Redis库
+    "session": { # session
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # 验证码的Redis配置项，采用2号Redis库
+    "verify_codes": { # 验证码
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "session"
