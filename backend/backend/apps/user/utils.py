@@ -1,3 +1,7 @@
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from .models import User
+
 def jwt_response_payload_handler(token, user=None, request=None):
     """
     自定义jwt认证成功返回的数据
@@ -12,7 +16,6 @@ def jwt_response_payload_handler(token, user=None, request=None):
         # 'user': UserSerializer(user, context={'request': request}).data
     }
 
-
 def get_user_by_account(account):
     """
     根据账号获取user对象
@@ -21,7 +24,7 @@ def get_user_by_account(account):
     """
     try:
         user = User.objects.filter(Q(username=account)|Q(mobile=account)).first()
-    except User.DoseNotExist:
-        return None
+    except User.DoesNotExist:
+        user = None
     else:
         return user

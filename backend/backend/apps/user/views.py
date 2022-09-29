@@ -15,6 +15,7 @@ from rest_framework.generics import CreateAPIView
 
 from .serializers import MyTokenSerializer, RegisterSerializer
 from .models import User
+from .utils import get_user_by_account
 
 # Create your views here.
 
@@ -71,3 +72,12 @@ class myBackend(ModelBackend):
                 return user
         except Exception as e:
             return None
+
+# 验证号码是否唯一, 由于是不需要使用序列化器，故继承最基础的APIView视图类
+class check_mobile(APIView):
+
+    def get(self, request, mobile):
+        ret = get_user_by_account(mobile)
+        if ret is not None:
+            return Response({"message": "手机号已经被注册了！"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "手机号未被注册！"})
