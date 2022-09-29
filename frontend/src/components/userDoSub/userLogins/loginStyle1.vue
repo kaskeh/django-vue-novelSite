@@ -27,7 +27,7 @@
           <input
             v-model="username"
             type="text"
-            placeholder="用户名 / 手机号码"
+            placeholder="用户名 / 手机号码 / 邮箱"
             class="user"
           />
           <input
