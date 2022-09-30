@@ -22,98 +22,96 @@ from .utils import get_user_by_account
 
 # Create your views here.
 
-##  ²»ĞèÒªĞ¯´øtoken¾ÍÄÜ·ÃÎÊ½Ó¿Ú
+##  ä¸éœ€è¦æºå¸¦tokenå°±èƒ½è®¿é—®æ¥å£
 def ListShops(requests):
     return HttpResponse("this is shop list")
 
-# ´øÓĞÈ¨ÏŞÈÏÖ¤µÄÊÓÍ¼
+# å¸¦æœ‰æƒé™è®¤è¯çš„è§†å›¾
 class DetailsView(APIView):
 
-    # »á¸²¸Çsetting.pyÖĞÉèÖÃµÄ£¬µÈÓÚÊÇÕâÀïÉèÖÃµÄÓÅÏÈ¼¶¸ß
-    permission_classes = [permissions.IsAuthenticated]   # È¨ÏŞ¹ıÂË£¬Í¨¹ıµÄ·µ»ØTrue
-    authentication_classes = (authentication.JWTAuthentication,)   # ÈÏÖ¤¹ıÂË
+    # ä¼šè¦†ç›–setting.pyä¸­è®¾ç½®çš„ï¼Œç­‰äºæ˜¯è¿™é‡Œè®¾ç½®çš„ä¼˜å…ˆçº§é«˜
+    permission_classes = [permissions.IsAuthenticated]   # æƒé™è¿‡æ»¤ï¼Œé€šè¿‡çš„è¿”å›True
+    authentication_classes = (authentication.JWTAuthentication,)   # è®¤è¯è¿‡æ»¤
 
     def get(self, request, *args, **kwargs):
         print('authenticate: ', request.successful_authenticator.authenticate(request))
-        print('tokenĞÅÏ¢: ', request.successful_authenticator.get_validated_token(
+        print('tokenä¿¡æ¯: ', request.successful_authenticator.get_validated_token(
             request.successful_authenticator.get_raw_token(request.successful_authenticator.get_header(request))))
-        print('µÇÂ¼ÓÃ»§: ', request.successful_authenticator.get_user(request.successful_authenticator.get_validated_token(
+        print('ç™»å½•ç”¨æˆ·: ', request.successful_authenticator.get_user(request.successful_authenticator.get_validated_token(
             request.successful_authenticator.get_raw_token(request.successful_authenticator.get_header(request)))))
         return Response('get ok')
 
     def post(self, request, *args, **kwargs):
         return Response('post ok')
 
-# ×Ô¶¨ÒåµÄµÇÂ½ÊÓÍ¼
+# è‡ªå®šä¹‰çš„ç™»é™†è§†å›¾
 class LoginView(TokenViewBase):
-    serializer_class = MyTokenSerializer  # Ê¹ÓÃ¸Õ¸Õ±àĞ´µÄĞòÁĞ»¯Àà
+    serializer_class = MyTokenSerializer  # ä½¿ç”¨åˆšåˆšç¼–å†™çš„åºåˆ—åŒ–ç±»
 
-    # post·½·¨¶ÔÓ¦postÇëÇó£¬µÇÂ½Ê±postÇëÇóÔÚÕâÀï´¦Àí
+    # postæ–¹æ³•å¯¹åº”postè¯·æ±‚ï¼Œç™»é™†æ—¶postè¯·æ±‚åœ¨è¿™é‡Œå¤„ç†
     def post(self, request, *args, **kwargs):
-        # Ê¹ÓÃ¸Õ¸Õ±àĞ´Ê±ĞòÁĞ»¯´¦ÀíµÇÂ½ÑéÖ¤¼°Êı¾İÏìÓ¦
+        # ä½¿ç”¨åˆšåˆšç¼–å†™æ—¶åºåˆ—åŒ–å¤„ç†ç™»é™†éªŒè¯åŠæ•°æ®å“åº”
         serializer = self.get_serializer(data=request.data)
         try:
             serializer.is_valid(raise_exception=True)
         except Exception as e:
-            raise ValueError(f'ÑéÖ¤Ê§°Ü£º {e}')
+            raise ValueError(f'éªŒè¯å¤±è´¥ï¼š {e}')
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
-# ×Ô¶¨Òå×¢²áÊÓÍ¼
+# è‡ªå®šä¹‰æ³¨å†Œè§†å›¾
 class RegisterView(CreateAPIView):
     # queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
-# ×Ô¶¨ÒåÑéÖ¤µÇÂ¼ºóÌ¨
+# è‡ªå®šä¹‰éªŒè¯ç™»å½•åå°
 class myBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         User = get_user_model()
         try:
-            # ¿ÉÒÔÍ¨¹ıÈıÖÖ·½Ê½½øĞĞµÇÂ¼£¬ÓÃ»§ÕËºÅ£¬ÓÃ»§ÓÊÏä£¬ÓÃ»§ÊÖ»úºÅÂë
+            # å¯ä»¥é€šè¿‡ä¸‰ç§æ–¹å¼è¿›è¡Œç™»å½•ï¼Œç”¨æˆ·è´¦å·ï¼Œç”¨æˆ·é‚®ç®±ï¼Œç”¨æˆ·æ‰‹æœºå·ç 
             user = User.objects.get(Q(username=username)|Q(email=username)|Q(mobile=username))
             if user.check_password(password):
                 return user
         except Exception as e:
             return None
 
-# ÑéÖ¤ºÅÂëÊÇ·ñÎ¨Ò», ÓÉÓÚÊÇ²»ĞèÒªÊ¹ÓÃĞòÁĞ»¯Æ÷£¬¹Ê¼Ì³Ğ×î»ù´¡µÄAPIViewÊÓÍ¼Àà
+# éªŒè¯å·ç æ˜¯å¦å”¯ä¸€, ç”±äºæ˜¯ä¸éœ€è¦ä½¿ç”¨åºåˆ—åŒ–å™¨ï¼Œæ•…ç»§æ‰¿æœ€åŸºç¡€çš„APIViewè§†å›¾ç±»
 class check_mobile(APIView):
 
     def get(self, request, mobile):
         ret = get_user_by_account(mobile)
         if ret is not None:
-            return Response({"message": "ÊÖ»úºÅÒÑ¾­±»×¢²áÁË£¡"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message": "ÊÖ»úºÅÎ´±»×¢²á£¡"})
+            return Response({"message": "æ‰‹æœºå·å·²ç»è¢«æ³¨å†Œäº†ï¼"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "æ‰‹æœºå·æœªè¢«æ³¨å†Œï¼"})
 
 from backend.settings import constants
 from backend.uitls.EMS import sendEmail
 
 class emailCodeAPIView(APIView):
     def get(self, request, email):
-        """ ÓÊÏäÑéÖ¤Âë·¢ËÍ """
+        """ é‚®ç®±éªŒè¯ç å‘é€ """
 
-        # # 1. ÅĞ¶ÏÓÊÏäÊÇ·ñÔÚ60ÃëÄÚÔø¾­·¢ËÍ¹ıÑéÖ¤Âë
+        # # 1. åˆ¤æ–­é‚®ç®±æ˜¯å¦åœ¨60ç§’å†…æ›¾ç»å‘é€è¿‡éªŒè¯ç 
         redis_conn = get_redis_connection("verify_codes")
         ret = redis_conn.get("email_%s" % email)
         if ret is not None:
-            return Response({"message": "ÑéÖ¤Âë60ÃëÄÚÒÑ¾­·¢Éú¹ı£¬ÇëÄÍĞÄµÈ´ı"})
+            return Response({"message": "éªŒè¯ç 60ç§’å†…å·²ç»å‘ç”Ÿè¿‡ï¼Œè¯·è€å¿ƒç­‰å¾…"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 2. Éú³ÉÑéÖ¤Âë
+        # 2. ç”ŸæˆéªŒè¯ç 
         sms_code = "%06d" % random.randint(1, 999999)
 
-        # 3. ±£´æÑéÖ¤Âëµ½redis
+        # 3. ä¿å­˜éªŒè¯ç åˆ°redis
         redis_conn.setex("sms_%s" % email, constants.EMS_EXPIRE_TIME, sms_code)
         redis_conn.setex("email_%s" % email, constants.SMS_INTERVAL_TIME, "_")
 
-        # 4. µ÷ÓÃ·¢ËÍÓÊ¼ş×é¼ş£¬·¢ËÍÑéÖ¤Âë
+        # 4. è°ƒç”¨å‘é€é‚®ä»¶ç»„ä»¶ï¼Œå‘é€éªŒè¯ç 
         try:
-            sendEmail.sendMailCode(message="ÄúÕıÔÚÉêÇë·¢ËÍÑéÖ¤Âë£ºÎªÁËÕËºÅ°²È«£¬ÇëÔÚÖ¸¶¨Î»ÖÃÊäÈëÏÂÁĞÑéÖ¤Âë£º{} ¡£ ÑéÖ¤ÂëÉæ¼°¸öÈËÕËºÅÒşË½°²È«£¬ÇĞÎğÏòËûÈËÍ¸Â©¡£".format(sms_code)
-                           ,Subject="¿ÉÈİÊé¸óÑéÖ¤ÂëÓÊ¼ş"
-                           ,sender_show="¿ÉÈİÊé¸ó"
-                           ,recipient_show=email
-                           ,to_addrs=email)
+            from myCelery.mail.tasks import send_email
+            send_email.delay(email, sms_code)
         except:
-            return Response({"message": "·¢ËÍÑéÖ¤ÂëÊ§°Ü"})
+            # å†…éƒ¨é”™è¯¯
+            return Response({"message": "å‘é€éªŒè¯ç å¤±è´¥"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # 5. ÏìÓ¦·¢ËÍÑéÖ¤ÂëµÄ½á¹¹
-        return Response({"message": "·¢ËÍÑéÖ¤Âë³É¹¦£¡"})
+        # 5. å“åº”å‘é€éªŒè¯ç çš„ç»“æ„
+        return Response({"message": "å‘é€éªŒè¯ç æˆåŠŸï¼", "code_life": constants.SMS_INTERVAL_TIME}, status=status.HTTP_200_OK)

@@ -111,7 +111,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             # 判断短信验证码
             redis_conn = get_redis_connection('verify_codes')
             # 获取真实验证码
-            real_sms_code = redis_conn.get('sms_%s' % attrs['mobile'])
+            real_sms_code = redis_conn.get('sms_%s' % attrs['email'])
             # 如果取出来是None，那么代表已经超时了
             if real_sms_code is None:
                 raise serializers.ValidationError('短信验证码无效')
