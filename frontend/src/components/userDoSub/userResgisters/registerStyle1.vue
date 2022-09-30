@@ -14,20 +14,21 @@
             :class="register_type == 0 ? 'current' : ''"
             @click="register_type = 0"
           >
-            用户名/邮箱注册
+            用户名注册
           </span>
           <span
             :class="register_type == 1 ? 'current' : ''"
             @click="register_type = 1"
           >
-            手机号注册
+            邮箱注册
           </span>
         </div>
         <div class="inp" v-if="register_type == 0">
           <input
             v-model="username"
             type="text"
-            placeholder="用户名 / 邮箱"
+            placeholder="用户名"
+            @blur="checkName"
             class="user"
           />
           <input
@@ -35,6 +36,7 @@
             type="password"
             name="pw0"
             class="pwd"
+            @blur="checkPwd"
             placeholder="密码"
           />
           <input
@@ -42,6 +44,7 @@
             type="password"
             name="pw1"
             class="pwd"
+            @blur="checkPwd"
             placeholder="再次输入密码"
           />
           <div id="geetest1"></div>
@@ -54,11 +57,11 @@
           </p>
         </div>
         <div class="inp" v-show="register_type == 1">
+          <!-- 失去焦点：@blur="checkMobileUnique" -->
           <input
-            v-model="mobile"
-            @blur="checkMobileUnique"
+            v-model="email"
             type="text"
-            placeholder="手机号码"
+            placeholder="邮箱账号"
             class="user"
           />
           <input
@@ -80,8 +83,9 @@
             type="text"
             class="pwd"
             placeholder="短信验证码"
+            :disabled="sms_code_cd"
           />
-          <button id="get_code">获取验证码</button>
+          <button id="get_code" @click="rendEmailCode">获取验证码</button>
           <button class="register_btn" @click="registerHandle">注册</button>
 
           <p class="go_login">
@@ -98,7 +102,7 @@
 
 <script>
 import instance from "@/utils/login_request";
-// import { tr } from "element-plus/es/locale";
+import { thisExpression } from "@babel/types";
 export default {
   name: "registerComp",
   data() {
@@ -107,8 +111,11 @@ export default {
       username: "",
       password0: "",
       password1: "", // 再次输入的密码
-      mobile: "",
+      // mobile: "",
+      email: "", // 邮箱账号
       sms_code: "", // 手机收到的短信验证码
+      sms_code_cd: false, // 发送冷却时间
+      sms_setInte: "", // 计时器对象
     };
   },
 
@@ -116,20 +123,47 @@ export default {
     registerHandle() {
       // console.log("点击了登录");
       if (this.register_type == 0) {
-        // console.log("当前使用了用户名/ 邮箱注册");
-        if (this.checkPwd() == true && this.checkName == true) {
+        if (this.checkPwd() == true && this.checkName() == true) {
           console.log("注册校验都通过了");
+          instance
+            .post("/register/", {
+              username: this.username,
+              password: this.password0,
+              password2: this.password1,
+            })
+            .then((response) => {
+              this.$message.success("注册成功！");
+              this.$route.push("/");
+            })
+            .catch((error) => {
+              this.$message.error("注册失败!");
+            });
         } else {
           let self = this;
           self.$alert(`注册失败，请检查输入是否规范`, `可容书阁`, {});
         }
       } else if (this.register_type == 1) {
-        console.log("当前使用了手机号注册");
-        if (this.checkMobile() == true && this.checkPwd() == true) {
+        // console.log("当前使用了手机号注册");
+        if (this.checkEmail() == true && this.checkPwd() == true) {
           console.log("注册校验都通过了");
+          instance
+            .post("/register/", {
+              username: this.email,
+              email: this.email,
+              password: this.password0,
+              password2: this.password1,
+              sms_code: this.sms_code,
+            })
+            .then((response) => {
+              this.$message.success("注册成功！");
+              this.$route.push("/");
+            })
+            .catch((error) => {
+              this.$message.error("注册失败!");
+            });
         } else {
           let self = this;
-          self.$alert(`注册失败，请检查输入是否规范`, `可容书阁`, {});
+          // self.$alert(`注册失败，请检查输入是否规范`, `可容书阁`, {});
         }
       }
       // // 登陆处理
@@ -145,27 +179,29 @@ export default {
     checkName() {
       // 设定用户名规则，验证输入的用户名是否符合规范
       // 规则：js正则表达 和python中正则表达式类似
-      var re = /^[0-9a-zA-Z]\w{2,5}$/;
-      var reE = /^[0-9a-zA-Z]{2,20}@[0-9a-zA-Z]{2,5}.[0-9a-zA-Z]{2,5}$/;
+      var re = /[0-9a-zA-Z]{2,15}/;
+      // var reE = /^[0-9a-zA-Z]{2,20}@[0-9a-zA-Z]{2,5}.[0-9a-zA-Z]{2,5}$/;
       // 验证输入的用户名是否符合规则
       // 如果不符合规则则提示：用户名不符合规范
       // 如果不指明状态一直都是underfined
-      if (re.test(this.username) | reE.test(this.username)) {
+      if (re.test(this.username)) {
         // 验证成功显示符合规范
         return true;
       } else {
+        this.$message.error("该用户名不符合规范！");
         return false;
       }
     },
     checkPwd() {
-      var re = /^[0-9a-zA-Z]{4,8}$/;
+      var re = /[0-9a-zA-Z]{4,15}/;
       if (
         re.test(this.password0) &&
         re.test(this.password1) &&
-        this.password0 == this.password1
+        this.password0 === this.password1
       ) {
         return true;
       } else {
+        this.$message.error("密码有问题！");
         return false;
       }
     },
@@ -177,7 +213,14 @@ export default {
         return false;
       }
     },
-    checkEmail() {},
+    checkEmail() {
+      var re = /[0-9a-za-z_]{0,19}@[0-9a-za-z]{1,13}\.[com,cn,net]{1,3}/;
+      if (re.test(this.email)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
 
     checkMobileUnique() {
       // 检查手机号的合法性[格式和是否已经被注册]
@@ -188,6 +231,38 @@ export default {
         .catch((error) => {
           this.$message.error("该手机号已被注册");
         });
+    },
+    rendEmailCode() {
+      if (this.checkEmail()) {
+        if (this.sms_code_cd) {
+          this.$message.error(
+            `发送时间间隔太短了，还有${localStorage["codeLife"]}秒！`
+          );
+          return false;
+        } else {
+          instance
+            .get(`/send_email_code/${this.email}/`)
+            .then((response) => {
+              this.$message.success(response.data.message);
+              //
+              this.sms_code_cd = true;
+              // 记录验证码发送间隔限制时间
+              localStorage["codeLife"] = response.data.code_life;
+              let sms_setInte = setInterval(() => {
+                if (localStorage["codeLife"] <= 1) {
+                  // 停止倒计时，允许用户点击发送短信
+                  clearInterval(sms_setInte);
+                  this.sms_code_cd = false;
+                } else {
+                  localStorage["codeLife"]--;
+                }
+              }, 1000);
+            })
+            .catch((error) => {
+              this.$message.error(error.data.message);
+            });
+        }
+      }
     },
 
     //   get_geetest_capcha() {

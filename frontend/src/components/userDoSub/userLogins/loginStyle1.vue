@@ -20,14 +20,14 @@
             :class="login_type == 1 ? 'current' : ''"
             @click="login_type = 1"
           >
-            短信登录
+            验证码登录
           </span>
         </div>
         <div class="inp" v-if="login_type == 0">
           <input
             v-model="username"
             type="text"
-            placeholder="用户名 / 手机号码 / 邮箱"
+            placeholder="用户名 / 邮箱"
             class="user"
           />
           <input
@@ -57,14 +57,14 @@
           <input
             v-model="username"
             type="text"
-            placeholder="手机号码"
+            placeholder="邮箱账号"
             class="user"
           />
           <input
             v-model="password"
             type="text"
             class="pwd"
-            placeholder="短信验证码"
+            placeholder="验证码"
           />
           <button id="get_code">获取验证码</button>
           <button class="login_btn">登录</button>
@@ -137,7 +137,8 @@ export default {
           self.$alert(`欢迎回来！`, `可容书阁`, {
             callback() {
               // 返回本页
-              self.$router.go(0);
+              // self.$router.go(0);
+              self.$route.push("/");
             },
           });
         })
